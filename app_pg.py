@@ -20,6 +20,18 @@ from sqlalchemy import Column, Integer, String, DateTime, select
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy import create_engine
 
+# --- add this small helper before you build the engine ---
+def _as_psycopg_driver(url: str) -> str:
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+psycopg://", 1)
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    return url
+
+DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///data/urls.db"
+DATABASE_URL = _as_psycopg_driver(DATABASE_URL)
+engine = create_engine(DATABASE_URL, future=True, pool_pre_ping=True)
+
 APP_TITLE = "short321 – URL Shortener"
 REDIRECT_HOME_TO = os.getenv("REDIRECT_HOME_TO", "https://pmitconsulting.com")
 SECRET_KEY = os.getenv("SECRET_KEY")
