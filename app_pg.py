@@ -1,6 +1,7 @@
 import os
 import re
 import random, string
+
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -24,7 +25,7 @@ from jinja2 import DictLoader
 # Config (env-driven)
 # ──────────────────────────────────────────────────────────────────────────────
 APP_TITLE = "short321 – URL Shortener"
-REDIRECT_HOME_TO = os.getenv("REDIRECT_HOME_TO", "https://pmitconsulting.com")
+REDIRECT_HOME_TO = os.getenv("REDIRECT_HOME_TO", "https://sos.splashtop.com")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ADMIN_PASSWORD_BCRYPT = os.getenv("ADMIN_PASSWORD_BCRYPT")
 PUBLIC_HOSTNAME = os.getenv("PUBLIC_HOSTNAME", "short321.com")
@@ -167,7 +168,7 @@ def enforce_https_when_proxied():
 
 @app.get("/")
 def home():
-    # 301 redirect root → pmitconsulting.com
+    # 301 redirect root → sos.splashtop.com
     return redirect(REDIRECT_HOME_TO, code=301)
 
 
