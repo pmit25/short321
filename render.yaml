@@ -5,7 +5,7 @@ services:
     region: oregon
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn -w 2 -b 0.0.0.0:10000 app_pg:app"
+    startCommand: "gunicorn -w 2 -b 0.0.0.0:$PORT app_pg:app"
     envVars:
       - key: REDIRECT_HOME_TO
         value: https://pmitconsulting.com
