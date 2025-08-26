@@ -35,5 +35,4 @@ services:
 databases:
   - name: short321-db
     plan: free
-```
 
