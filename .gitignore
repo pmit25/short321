@@ -1,6 +1,5 @@
-```text
+text
 __pycache__/
 *.pyc
 .venv/
 .env
-```
