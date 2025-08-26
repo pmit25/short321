@@ -1,5 +1,3 @@
-# 1. app_pg.py
-```python
 import os
 import re
 import random, string
@@ -148,5 +146,4 @@ def go(slug):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))
     app.run(host="0.0.0.0", port=port, debug=True)
-```
 
