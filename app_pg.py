@@ -16,11 +16,10 @@ from flask import (
 )
 
 import bcrypt
-from sqlalchemy import Column, Integer, String, DateTime, select
+from sqlalchemy import Column, Integer, String, DateTime, select, create_engine
 from sqlalchemy.orm import declarative_base, Session
-from sqlalchemy import create_engine
 
-# --- add this small helper before you build the engine ---
+# --- helper to force psycopg v3 driver scheme for SQLAlchemy ---
 def _as_psycopg_driver(url: str) -> str:
     if url.startswith("postgres://"):
         return url.replace("postgres://", "postgresql+psycopg://", 1)
@@ -28,9 +27,11 @@ def _as_psycopg_driver(url: str) -> str:
         return url.replace("postgresql://", "postgresql+psycopg://", 1)
     return url
 
+# Build database URL and engine ONCE
 DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///data/urls.db"
 DATABASE_URL = _as_psycopg_driver(DATABASE_URL)
 engine = create_engine(DATABASE_URL, future=True, pool_pre_ping=True)
+Base = declarative_base()
 
 APP_TITLE = "short321 – URL Shortener"
 REDIRECT_HOME_TO = os.getenv("REDIRECT_HOME_TO", "https://pmitconsulting.com")
@@ -40,23 +41,6 @@ PUBLIC_HOSTNAME = os.getenv("PUBLIC_HOSTNAME", "short321.com")
 
 RESERVED_SLUGS = {"admin", "logout", "login", "create", "delete", "static", "favicon.ico", "robots.txt"}
 SLUG_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
-
-DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///data/urls.db"
-engine = create_engine(DATABASE_URL, future=True, pool_pre_ping=True)
-Base = declarative_base()
-
-class Link(Base):
-    __tablename__ = "links"
-    slug = Column(String(64), primary_key=True)
-    dest_url = Column(String(2048), nullable=False)
-    hits = Column(Integer, nullable=False, default=0)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-
-Base.metadata.create_all(engine)
-
-app = Flask(__name__)
-app.config["SECRET_KEY"] = SECRET_KEY or __import__("secrets").token_hex(32)
-app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax")
 
 def is_logged_in():
     return bool(session.get("admin"))
