@@ -22,17 +22,6 @@ services:
     healthCheckPath: /admin
     autoDeploy: true
 
-  - type: pserv
-    name: short321-db
-    plan: free
-    runtime: docker
-    disk:
-      name: data
-      sizeGB: 1
-    databaseName: short321
-    databaseUser: short321
-
 databases:
   - name: short321-db
     plan: free
-
