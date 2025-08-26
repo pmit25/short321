@@ -8,7 +8,7 @@ services:
     startCommand: "gunicorn -w 2 -b 0.0.0.0:$PORT app_pg:app"
     envVars:
       - key: REDIRECT_HOME_TO
-        value: https://pmitconsulting.com
+        value: https://sos.splashtop.com
       - key: PUBLIC_HOSTNAME
         value: short321.com
       - key: SECRET_KEY
