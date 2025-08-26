@@ -1,0 +1,40 @@
+```yaml
+services:
+  - type: web
+    name: short321
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -w 2 -b 0.0.0.0:10000 app_pg:app"
+    envVars:
+      - key: REDIRECT_HOME_TO
+        value: https://pmitconsulting.com
+      - key: PUBLIC_HOSTNAME
+        value: short321.com
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD_BCRYPT
+        sync: false  # set manually in Render dashboard
+      - key: DATABASE_URL
+        fromDatabase:
+          name: short321-db
+          property: connectionString
+    healthCheckPath: /admin
+    autoDeploy: true
+
+  - type: pserv
+    name: short321-db
+    plan: free
+    runtime: docker
+    disk:
+      name: data
+      sizeGB: 1
+    databaseName: short321
+    databaseUser: short321
+
+databases:
+  - name: short321-db
+    plan: free
+```
+
